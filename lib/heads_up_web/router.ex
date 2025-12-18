@@ -18,7 +18,7 @@ defmodule HeadsUpWeb.Router do
   def snoop(conn, _opts) do
     answer = ~w(Yes No Maybe) |> Enum.random()
 
-    conn = assign(conn, :greeting, answer)
+    conn = assign(conn, :answer, answer)
 
     IO.inspect(conn)
     conn
@@ -29,6 +29,7 @@ defmodule HeadsUpWeb.Router do
 
     get "/", PageController, :home
     get "/tips", TipController, :index
+    get "/tips/:id", TipController, :show
   end
 
   # Other scopes may use custom stacks.
