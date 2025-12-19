@@ -2,6 +2,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   use HeadsUpWeb, :live_view
 
   alias HeadsUp.Incidents
+  import HeadsUp.CustomComponents
 
   def mount(_params, _sesion, socket) do
     socket = assign(socket, :incidents, Incidents.list_incidents)
@@ -31,15 +32,6 @@ defmodule HeadsUpWeb.IncidentLive.Index do
         </div>
         <.badge status={@incident.status} />
       </div>
-    </div>
-    """
-  end
-
-  attr :status, :atom, required: true, values: [:pending, :resolved, :cancelled]
-  def badge(assigns) do
-    ~H"""
-    <div class="rounded-md px-2 py-1 text-xs font-medium uppercase inline-block border text-lime-600 border-lime-600">
-      <%= @status %>
     </div>
     """
   end
