@@ -13,6 +13,16 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   def render(assigns) do
     ~H"""
     <div class="incident-index">
+      <.headline>
+        <.icon name="hero-trophy-mini" />
+        25 Incidents Resolved This Month!
+        <:tagline :let={emoji}>
+          Thanks for pitching in. <%= emoji %>
+        </:tagline>
+        <:tagline :let={emoji}>
+          You're making a difference! <%= emoji %>
+        </:tagline>
+      </.headline>
       <div class="incidents">
         <.incident_card :for={incident <- @incidents} incident={incident}/>
       </div>
