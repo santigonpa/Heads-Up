@@ -38,7 +38,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
         <img src={@incident.image_path}/>
         <h2><%= @incident.name %></h2>
         <div class="details">
-          <div class="name">
+          <div class="priority">
             <%= @incident.priority %>
           </div>
           <.badge status={@incident.status} />
