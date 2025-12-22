@@ -2,6 +2,7 @@ defmodule HeadsUp.CustomComponents do
   use HeadsUpWeb, :html
 
   attr :status, :atom, required: true, values: [:pending, :resolved, :cancelled]
+
   def badge(assigns) do
     ~H"""
     <div class={[
@@ -10,11 +11,10 @@ defmodule HeadsUp.CustomComponents do
       @status == :pending && "text-amber-600 border-amber-600",
       @status == :canceled && "text-gray-600 border-gray-600"
     ]}>
-      <%= @status %>
+      {@status}
     </div>
     """
   end
-
 
   slot :inner_block, required: true
   slot :tagline
@@ -25,10 +25,10 @@ defmodule HeadsUp.CustomComponents do
     ~H"""
     <div class="headline">
       <h1>
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </h1>
       <div :for={tag <- @tagline} class="tagline">
-        <%= render_slot(tag, @emoji) %>
+        {render_slot(tag, @emoji)}
       </div>
     </div>
     """
