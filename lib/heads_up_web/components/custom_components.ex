@@ -1,7 +1,7 @@
 defmodule HeadsUp.CustomComponents do
   use HeadsUpWeb, :html
 
-  attr :status, :atom, required: true, values: [:pending, :resolved, :cancelled]
+  attr :status, :atom, required: true, values: [:pending, :resolved, :canceled]
 
   def badge(assigns) do
     ~H"""
