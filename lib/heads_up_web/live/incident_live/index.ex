@@ -5,7 +5,10 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   import HeadsUp.CustomComponents
 
   def mount(_params, _sesion, socket) do
-    socket = stream(socket, :incidents, Incidents.list_incidents(), page_title: "Incidents")
+    socket =
+      socket
+      |> stream(:incidents, Incidents.list_incidents(), page_title: "Incidents")
+      |> assign(:form, to_form(%{}))
 
     {:ok, socket}
   end
@@ -23,6 +26,9 @@ defmodule HeadsUpWeb.IncidentLive.Index do
           You're making a difference! <%= emoji %>
         </:tagline>
       </.headline>
+
+      <.filter_form form={@form} />
+
       <div class="incidents" id="incidents" phx-update="stream">
         <.incident_card :for={{dom_id, incident} <- @streams.incidents} incident={incident} id={dom_id} />
       </div>
@@ -47,6 +53,26 @@ defmodule HeadsUpWeb.IncidentLive.Index do
         </div>
       </div>
     </.link>
+    """
+  end
+
+  def filter_form(assigns) do
+    ~H"""
+      <.form for={@form}>
+        <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
+        <.input
+          type="select"
+          field={@form[:status]}
+          prompt="Status"
+          options={[:pending, :resolved, :cancelled]}
+        />
+        <.input
+          type="select"
+          field={@form[:sort_by]}
+          prompt="Sort By"
+          options={[:name, :priority]}
+        />
+      </.form>
     """
   end
 end
