@@ -17,20 +17,26 @@ defmodule HeadsUpWeb.IncidentLive.Index do
     ~H"""
     <div class="incident-index">
       <.headline>
-        <.icon name="hero-trophy-mini" />
-        25 Incidents Resolved This Month!
+        <.icon name="hero-trophy-mini" /> 25 Incidents Resolved This Month!
         <:tagline :let={emoji}>
-          Thanks for pitching in. <%= emoji %>
+          Thanks for pitching in. {emoji}
         </:tagline>
         <:tagline :let={emoji}>
-          You're making a difference! <%= emoji %>
+          You're making a difference! {emoji}
         </:tagline>
       </.headline>
 
       <.filter_form form={@form} />
 
       <div class="incidents" id="incidents" phx-update="stream">
-        <.incident_card :for={{dom_id, incident} <- @streams.incidents} incident={incident} id={dom_id} />
+        <div id="empty" class="no-results only:block hidden">
+          No incidents found. Try changing your filters.
+        </div>
+        <.incident_card
+          :for={{dom_id, incident} <- @streams.incidents}
+          incident={incident}
+          id={dom_id}
+        />
       </div>
     </div>
     """
@@ -43,11 +49,11 @@ defmodule HeadsUpWeb.IncidentLive.Index do
     ~H"""
     <.link navigate={~p"/incidents/#{@incident.id}"} id={@id}>
       <div class="card">
-        <img src={@incident.image_path}/>
-        <h2><%= @incident.name %></h2>
+        <img src={@incident.image_path} />
+        <h2>{@incident.name}</h2>
         <div class="details">
           <div class="priority">
-            <%= @incident.priority %>
+            {@incident.priority}
           </div>
           <.badge status={@incident.status} />
         </div>
@@ -58,21 +64,30 @@ defmodule HeadsUpWeb.IncidentLive.Index do
 
   def filter_form(assigns) do
     ~H"""
-      <.form for={@form} id="filter-form" phx-change="filter">
-        <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
-        <.input
-          type="select"
-          field={@form[:status]}
-          prompt="Status"
-          options={[:pending, :resolved, :canceled]}
-        />
-        <.input
-          type="select"
-          field={@form[:sort_by]}
-          prompt="Sort By"
-          options={[:name, :priority]}
-        />
-      </.form>
+    <.form for={@form} id="filter-form" phx-change="filter" phx-submit="filter">
+      <.input
+        field={@form[:q]}
+        placeholder="Search..."
+        autocomplete="off"
+        phx-debounce="1000"
+      />
+      <.input
+        type="select"
+        field={@form[:status]}
+        prompt="Status"
+        options={[:pending, :resolved, :canceled]}
+      />
+      <.input
+        type="select"
+        field={@form[:sort_by]}
+        prompt="Sort By"
+        options={[
+          Name: "name",
+          "Priority: High to Low": "priority_desc",
+          "Priority: Low to High": "priority_asc"
+        ]}
+      />
+    </.form>
     """
   end
 
@@ -82,6 +97,6 @@ defmodule HeadsUpWeb.IncidentLive.Index do
       |> assign(:form, to_form(params))
       |> stream(:incidents, Incidents.filter_incidents(params), reset: true)
 
-      {:noreply, socket}
+    {:noreply, socket}
   end
 end
