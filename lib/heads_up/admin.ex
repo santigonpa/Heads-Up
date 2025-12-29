@@ -9,7 +9,8 @@ defmodule HeadsUp.Admin do
     |> Repo.all()
   end
 
-  def create_incident(attrs \\ %{}) do # default value %{}
+  # default value %{}
+  def create_incident(attrs \\ %{}) do
     %Incident{}
     |> Incident.changeset(attrs)
     |> Repo.insert()
@@ -27,5 +28,9 @@ defmodule HeadsUp.Admin do
     incident
     |> Incident.changeset(attrs)
     |> Repo.update()
+  end
+
+  def delete_incident(%Incident{} = incident) do
+    Repo.delete(incident)
   end
 end
