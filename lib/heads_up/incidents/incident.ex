@@ -4,10 +4,10 @@ defmodule HeadsUp.Incidents.Incident do
 
   schema "incidents" do
     field :name, :string
-    field :priority, :integer
+    field :priority, :integer, default: 1
     field :status, Ecto.Enum, values: [:pending, :resolved, :canceled]
     field :description, :string
-    field :image_path, :string
+    field :image_path, :string, default: "/images/placeholder.jpg"
 
     timestamps(type: :utc_datetime)
   end
@@ -17,5 +17,7 @@ defmodule HeadsUp.Incidents.Incident do
     incident
     |> cast(attrs, [:name, :description, :priority, :status, :image_path])
     |> validate_required([:name, :description, :priority, :status, :image_path])
+    |> validate_length(:description, min: 10)
+    |> validate_number(:priority, greater_than: 0, less_than_or_equal_to: 3)
   end
 end
