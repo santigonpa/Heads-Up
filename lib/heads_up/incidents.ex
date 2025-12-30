@@ -1,6 +1,7 @@
 alias HeadsUp.Incidents.Incident
 alias HeadsUp.Repo
 import Ecto.Query
+
 defmodule HeadsUp.Incidents do
   def list_incidents do
     Repo.all(Incident)
@@ -8,10 +9,12 @@ defmodule HeadsUp.Incidents do
 
   def get_incident!(id) do
     Repo.get!(Incident, id)
+    |> Repo.preload(:category)
   end
 
   def urgent_incidents(incident) do
     Process.sleep(300)
+
     Incident
     |> where(status: :pending)
     |> where([r], r.id != ^incident.id)
@@ -25,11 +28,12 @@ defmodule HeadsUp.Incidents do
     |> with_status(filter["status"])
     |> search_by(filter["q"])
     |> sort(filter["sort_by"])
+    |> preload(:category)
     |> Repo.all()
   end
 
   defp with_status(query, status)
-    when status in ~w(pending resolved canceled) do
+       when status in ~w(pending resolved canceled) do
     where(query, status: ^status)
   end
 
