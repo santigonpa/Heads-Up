@@ -14,4 +14,19 @@ defmodule HeadsUpWeb.Api.IncidentController do
 
     render(conn, :show, incident: incident)
   end
+
+  def create(conn, %{"incident" => incident}) do
+    case Admin.create_incident(incident) do
+      {:ok, incident} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", ~p"/api/incidents/#{incident}")
+        |> render(:show, incident: incident)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(:error, changeset: changeset)
+    end
+  end
 end
