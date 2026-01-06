@@ -54,6 +54,7 @@ defmodule HeadsUpWeb.Router do
       live "/categories/new", CategoryLive.Form, :new
       live "/categories/:id", CategoryLive.Show, :show
       live "/categories/:id/edit", CategoryLive.Form, :edit
+      live "/admin/users", AdminUserLive.Index
     end
   end
 

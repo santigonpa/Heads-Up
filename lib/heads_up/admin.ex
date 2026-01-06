@@ -1,11 +1,18 @@
 alias HeadsUp.Incidents.Incident
 alias HeadsUp.Incidents
+alias HeadsUp.Accounts.User
 alias HeadsUp.Repo
 import Ecto.Query
 
 defmodule HeadsUp.Admin do
   def list_incidents do
     Incident
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+  end
+
+  def list_users do
+    User
     |> order_by(desc: :inserted_at)
     |> Repo.all()
   end
@@ -23,6 +30,10 @@ defmodule HeadsUp.Admin do
 
   def get_incident!(id) do
     Repo.get!(Incident, id)
+  end
+
+  def get_user!(id) do
+    Repo.get!(User, id)
   end
 
   def update_incident(%Incident{} = incident, attrs) do
@@ -63,5 +74,11 @@ defmodule HeadsUp.Admin do
 
   def draw_heroic_response(%Incident{}) do
     {:error, "Incident must be resolved to draw a heroic response!"}
+  end
+
+  def toggle_admin(%User{} = user) do
+    user
+    |> Ecto.Changeset.change(%{is_admin: !user.is_admin})
+    |> Repo.update()
   end
 end
